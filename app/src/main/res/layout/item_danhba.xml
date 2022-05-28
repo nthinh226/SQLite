@@ -15,7 +15,6 @@
         android:id="@+id/txtSoDienThoai"
         android:layout_width="match_parent"
         android:textSize="16dp"
-        android:textStyle="italic"
         android:textColor="@color/design_default_color_error"
         android:text="SDT"
         android:layout_height="wrap_content" />

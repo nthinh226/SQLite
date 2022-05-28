@@ -1,12 +1,16 @@
 package com.thinh.nt226.sqlite;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -26,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<Contact> dsDanhBa;
     ContactAdapter contactAdapter;
 
-    String DATABASE_NAME = "dbContact.sqlite";
+    private static final String DATABASE_NAME = "dbContact.sqlite";
     private static final String DB_PATH_SUFFIX = "/databases/";
     SQLiteDatabase database = null;
 
@@ -42,11 +46,59 @@ public class MainActivity extends AppCompatActivity {
         addEvents();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1011 && resultCode == 33) {
+
+            Bundle bundle = new Bundle();
+            bundle = data.getBundleExtra("NEW_CONTACT");
+            String hoTen = bundle.getString("HO_TEN");
+            String phone = bundle.getString("PHONE");
+            xyLyThemDanhBa(hoTen, phone);
+        }
+        if (requestCode == 1002) {
+            if (resultCode == 44) {
+                String ma = data.getStringExtra("MA");
+                database.delete("Contact", "Ma=?", new String[]{ma});
+                hienThiDanhSachDanhBa();
+            } else if (resultCode == 55) {
+                String ma = data.getStringExtra("MA");
+                String ten = data.getStringExtra("EDIT_TEN");
+                String phone = data.getStringExtra("EDIT_PHONE");
+                xyLySuaThongTin(ma, ten, phone);
+            }
+
+        }
+
+    }
+
+    private void xyLySuaThongTin(String ma, String ten, String phone) {
+        ContentValues row = new ContentValues();
+
+        row.put("Ten", ten);
+        row.put("Phone", phone);
+        database.update("Contact", row, "ma=?", new String[]{ma});
+        hienThiDanhSachDanhBa();
+    }
+
+    private void xyLyThemDanhBa(String hoTen, String phone) {
+        ContentValues row = new ContentValues();
+        int ma = Integer.parseInt(dsDanhBa.get(dsDanhBa.size() - 1).getMa() + 1);
+
+        row.put("Ma", ma);
+        row.put("Ten", hoTen);
+        row.put("Phone", phone);
+        long r = database.insert("Contact", null, row);
+        Toast.makeText(this, "Thêm danh bạ thành công", Toast.LENGTH_SHORT).show();
+        hienThiDanhSachDanhBa();
+    }
+
     private void addEvents() {
         btnThemDanhBa.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                startActivityForResult(new Intent(MainActivity.this, ThemDanhBaActivity.class), 1011);
             }
         });
     }
@@ -54,24 +106,38 @@ public class MainActivity extends AppCompatActivity {
     private void addControls() {
         btnThemDanhBa = (ImageButton) findViewById(R.id.btnThemDanhBa);
         lvDanhBa = (ListView) findViewById(R.id.lvDanhBa);
+        hienThiDanhSachDanhBa();
+    }
+
+    private void hienThiDanhSachDanhBa() {
         dsDanhBa = new ArrayList<>();
-        dsDanhBa.add(new Contact("1","Thinh","038"));
         contactAdapter = new ContactAdapter(MainActivity.this, android.R.layout.simple_list_item_1, dsDanhBa);
         lvDanhBa.setAdapter(contactAdapter);
+        lvDanhBa.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Contact contact = dsDanhBa.get(position);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("DANH_BA", contact);
+                Intent intent = new Intent(MainActivity.this, ChiTietDanhBaActivity.class);
+                intent.putExtra("CHI_TIET_DANH_BA", bundle);
+                startActivityForResult(intent, 1002);
+            }
+        });
 
         xuLyCSDL();
     }
 
     private void xuLyCSDL() {
-        database = openOrCreateDatabase(DATABASE_NAME,MODE_PRIVATE,null);
+        database = openOrCreateDatabase(DATABASE_NAME, MODE_PRIVATE, null);
 
-        Cursor cursor = database.query("Contact",null,null,null,null,null,null);
+        Cursor cursor = database.query("Contact", null, null, null, null, null, null);
         dsDanhBa.clear();
-        while (cursor.moveToNext()){
+        while (cursor.moveToNext()) {
             int ma = cursor.getInt(0);
             String ten = cursor.getString(1);
             String phone = cursor.getString(2);
-            dsDanhBa.add(new Contact(String.valueOf(ma),ten,phone));
+            dsDanhBa.add(new Contact(String.valueOf(ma), ten, phone));
         }
         cursor.close();
         contactAdapter.notifyDataSetChanged();
