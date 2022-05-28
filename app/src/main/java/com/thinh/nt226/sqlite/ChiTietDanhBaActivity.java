@@ -1,8 +1,10 @@
 package com.thinh.nt226.sqlite;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -102,9 +104,10 @@ public class ChiTietDanhBaActivity extends AppCompatActivity {
         Uri uri = Uri.parse("tel:" + txtSoDienThoai.getText().toString());
         intent.setData(uri);
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-            return;
+            ActivityCompat.requestPermissions(ChiTietDanhBaActivity.this, new String[] {Manifest.permission.CALL_PHONE},1);
+        }else{
+            startActivity(intent);
         }
-        startActivity(intent);
 
     }
 
