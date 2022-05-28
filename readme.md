@@ -68,7 +68,7 @@ TƯƠNG TÁC VỚI SQLite
 
 * Mở CSDL trước:
 
-	database = openOrCreateDatabase(DATABASE_NAME.MODE_PRIVATE,null);
+	database = openOrCreateDatabase(DATABASE_NAME,MODE_PRIVATE,null);
 * Truy vấn lấy dữ liệu ra
 
 	Cursor cursor = database.query("Contact",null,null,null,null,null,null);
