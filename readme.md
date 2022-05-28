@@ -62,3 +62,54 @@ Step 4:
             Log.e("LOI_SAO_CHEP", ex.toString());
         }
     }
+
+
+TƯƠNG TÁC VỚI SQLite
+
+* Mở CSDL trước:
+
+	database = openOrCreateDatabase(DATABASE_NAME.MODE_PRIVATE,null);
+* Truy vấn lấy dữ liệu ra
+
+	Cursor cursor = database.query("Contact",null,null,null,null,null,null);
+	//Cursor cursor2 = database.rawQuery("select * from Contact",null);
+	dsDanhBa.clear();
+
+	//cursor ban đầu trỏ tới null -> dùng moveNextTo() để trỏ tới dòng kế tiếp
+	//-> khi hết dòng thì moveNextTo() sẽ bằng false
+
+	while (cursor.moveNextTo()){
+		int ma = cursor.getInt(0);
+		String ten = cursor.getString(1);
+		String ten = cursor.getString(2);
+		dsDanhBa.add(ma+"-"+ten+"\n"+phone);
+	}
+	cursor.close(); // đóng kết nối
+	adapter.notifyDataSetChanged();
+
+* Thêm dữ liệu
+
+	ContentValues row = new ContentValues();
+	row.put("Tên cột", values);
+	row.put("Tên cột", values);
+	...
+	long r = database.insert("tên bảng",null,row);
+	
+	Toast.makeText(Context, "Vừa thêm mới 1 contact, kết quả trạng thái =" + r,Toast.LENGTH_LONG).show();
+	
+* Cập nhật dữ liệu
+
+	ContentValues row = new ContentValues();
+	row.put("Cột cần sửa", new values);
+	database.update("tên bảng", row, "(điều kiện) ma=?", new String[]{"3"});
+
+
+* Xoá dữ liệu
+	
+	-Xoá toàn bộ dữ liệu
+		database.delete("tên bảng", null, null);
+	-Xoá theo điều kiện
+		String malop = "1"
+		database.delete("tên bảng", malop=?, new String[] {malop};);
+	
+
