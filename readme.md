@@ -1,3 +1,5 @@
+Cách sao chép dữ liệu từ Assets vào hệ thống mobile
+
 Step 1: 
 
     String DATABASE_NAME = "dbContact.sqlite";
