@@ -31,6 +31,7 @@ Step 3:
     }
 
 Step 4: 
+    
     private void CopyDataBaseFromAsset() {
         try {
             InputStream myInput = getAssets().open(DATABASE_NAME);
