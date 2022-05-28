@@ -14,6 +14,7 @@ Step 2: lấy đường dẫn lưu trữ
 
 Step 3: 
 //private app
+    
     File dbFile = getDatabasePath(DATABASE_NAME);
 
     if (!dbFile.exists())
