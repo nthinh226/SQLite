@@ -137,5 +137,24 @@ TƯƠNG TÁC VỚI SQLite
     -Xoá theo điều kiện
         String malop = "1"
         database.delete("tên bảng", malop=?, new String[] {malop};);
-	
 
+* Xử lý event
+
+    private void xyLyNhanTin() {
+        Intent smsIntent = new Intent(Intent.ACTION_VIEW);
+        smsIntent.setType("vnd.android-dir/mms-sms");
+        smsIntent.putExtra("address", txtSoDienThoai.getText().toString());
+        smsIntent.putExtra("sms_body", "");
+        startActivity(smsIntent);
+    }
+
+    private void xyLyCall() {
+        Intent intent = new Intent(Intent.ACTION_CALL);
+        Uri uri = Uri.parse("tel:" + txtSoDienThoai.getText().toString());
+        intent.setData(uri);
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(ChiTietDanhBaActivity.this, new String[] {Manifest.permission.CALL_PHONE},1);
+        }else{
+            startActivity(intent);
+        }
+    }
