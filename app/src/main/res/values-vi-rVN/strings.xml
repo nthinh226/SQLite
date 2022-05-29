@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Quản lý danh bạ</string>
+    <string name="edit">Chỉnh sửa</string>
+    <string name="message">tin nhắn</string>
+    <string name="call">gọi</string>
+    <string name="mobile">điện thoại</string>
+    <string name="phone">số điện thoại</string>
+    <string name="Phone">Số điện thoại</string>
+    <string name="contacts">Danh bạ</string>
+    <string name="cancel">Huỷ bỏ</string>
+    <string name="done">Hoàn thành</string>
+    <string name="new_contact">Thêm danh bạ</string>
+    <string name="first_name">Tên</string>
+    <string name="last_name">Họ</string>
+    <string name="delete">xoá</string>
+    <string name="save">Lưu</string>
+</resources>
