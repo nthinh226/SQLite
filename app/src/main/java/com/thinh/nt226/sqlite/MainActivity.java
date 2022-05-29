@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
             bundle = data.getBundleExtra("NEW_CONTACT");
             String hoTen = bundle.getString("HO_TEN");
             String phone = bundle.getString("PHONE");
-            xyLyThemDanhBa(hoTen, phone);
+            xuLyThemDanhBa(hoTen, phone);
         }
         if (requestCode == 1002) {
             if (resultCode == 44) {
@@ -90,9 +90,9 @@ public class MainActivity extends AppCompatActivity {
         hienThiDanhSachDanhBa();
     }
 
-    private void xyLyThemDanhBa(String hoTen, String phone) {
+    private void xuLyThemDanhBa(String hoTen, String phone) {
         ContentValues row = new ContentValues();
-        int ma = Integer.parseInt(dsDanhBa.get(dsDanhBa.size() - 1).getMa() + 1);
+        int ma = Integer.parseInt(dsDanhBa.get(dsDanhBa.size() - 1).getMa()) + 1;
 
         row.put("Ma", ma);
         row.put("Ten", hoTen);
@@ -121,7 +121,8 @@ public class MainActivity extends AppCompatActivity {
     private void showAllContactFromDevice(ArrayList<Contact> dsDanhBa) {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.READ_CONTACTS}, 1);
-        } else {
+        }
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED){
             Uri uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
             Cursor cursor = getContentResolver().query(uri, null, null, null, null);
             //trả về cursor quản lý danh bạ của chúng ta
@@ -135,9 +136,22 @@ public class MainActivity extends AppCompatActivity {
                 String name = cursor.getString(viTriTenCotName);
                 String phone = cursor.getString(viTriTenCotPhone);
 
-                xyLyThemDanhBa(name,phone);
+                addContactFromDevice(name, phone);
             }
+            cursor.close();
+            contactAdapter.notifyDataSetChanged();
         }
+    }
+
+    private void addContactFromDevice(String name, String phone) {
+        ContentValues row = new ContentValues();
+        int ma = Integer.parseInt(dsDanhBa.get(dsDanhBa.size() - 1).getMa()) + 1;
+
+        row.put("Ma", ma);
+        row.put("Ten", name);
+        row.put("Phone", phone);
+        dsDanhBa.add(new Contact(String.valueOf(ma),name,phone));
+        long r = database.insert("Contact", null, row);
     }
 
     private void addControls() {
