@@ -108,7 +108,6 @@ public class ChiTietDanhBaActivity extends AppCompatActivity {
         }else{
             startActivity(intent);
         }
-
     }
 
     private void addControls() {
