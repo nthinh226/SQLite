@@ -14,5 +14,6 @@
     <string name="last_name">Last name</string>
     <string name="delete">delete</string>
     <string name="save">Save</string>
+    <string name="addFromDevice">Add contact from device</string>
 
 </resources>

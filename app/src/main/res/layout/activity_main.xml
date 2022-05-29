@@ -9,11 +9,21 @@
     tools:context=".MainActivity">
 
     <ImageButton
+        android:id="@+id/btnThemDanhBa"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right"
-        android:id="@+id/btnThemDanhBa"
         android:background="@drawable/bg_button_create" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:id="@+id/txtAddContactFromDevice"
+        android:padding="10dp"
+        android:enabled="true"
+        android:text="@string/addFromDevice"
+        android:textColor="@drawable/button_text_color" />
 
     <TextView
         android:layout_width="match_parent"
@@ -24,9 +34,9 @@
         android:textStyle="bold" />
 
     <ListView
-        android:layout_marginTop="10dp"
         android:id="@+id/lvDanhBa"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp" />
 
 </LinearLayout>

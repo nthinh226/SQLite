@@ -2,17 +2,24 @@ package com.thinh.nt226.sqlite;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.thinh.nt226.sqlite.adapter.ContactAdapter;
@@ -26,6 +33,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     ImageButton btnThemDanhBa;
+    TextView txtAddContactFromDevice;
     ListView lvDanhBa;
     ArrayList<Contact> dsDanhBa;
     ContactAdapter contactAdapter;
@@ -101,9 +109,39 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(new Intent(MainActivity.this, ThemDanhBaActivity.class), 1011);
             }
         });
+        txtAddContactFromDevice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAllContactFromDevice(dsDanhBa);
+            }
+        });
+
+    }
+
+    private void showAllContactFromDevice(ArrayList<Contact> dsDanhBa) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.READ_CONTACTS}, 1);
+        } else {
+            Uri uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
+            Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+            //trả về cursor quản lý danh bạ của chúng ta
+            while (cursor.moveToNext()) {
+                String tenCotName = ContactsContract.Contacts.DISPLAY_NAME;
+                String tenCotPhone = ContactsContract.CommonDataKinds.Phone.NUMBER;
+
+                int viTriTenCotName = cursor.getColumnIndex(tenCotName);
+                int viTriTenCotPhone = cursor.getColumnIndex(tenCotPhone);
+
+                String name = cursor.getString(viTriTenCotName);
+                String phone = cursor.getString(viTriTenCotPhone);
+
+                xyLyThemDanhBa(name,phone);
+            }
+        }
     }
 
     private void addControls() {
+        txtAddContactFromDevice = (TextView) findViewById(R.id.txtAddContactFromDevice);
         btnThemDanhBa = (ImageButton) findViewById(R.id.btnThemDanhBa);
         lvDanhBa = (ListView) findViewById(R.id.lvDanhBa);
         hienThiDanhSachDanhBa();
